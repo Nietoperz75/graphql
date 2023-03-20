@@ -1,0 +1,48 @@
+package com.course.graphql.component.fake;
+
+import com.course.graphql.datasource.fake.FakeBookDataSource;
+import com.course.graphql.generated.DgsConstants;
+import com.course.graphql.generated.types.Book;
+import com.course.graphql.generated.types.ReleaseHistory;
+import com.course.graphql.generated.types.ReleaseHistoryInput;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.InputArgument;
+import graphql.schema.DataFetchingEnvironment;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@DgsComponent
+public class FakeBookDataResolver {
+
+    @DgsData(parentType = "Query", field = "books")
+    public List<Book> booksWrittenBy(@InputArgument(name = "author") Optional<String> authorName){
+        if(authorName.isEmpty() || StringUtils.isBlank(authorName.get())) {
+            return FakeBookDataSource.BOOK_LIST;
+        }
+
+        return FakeBookDataSource.BOOK_LIST.stream().filter(book -> StringUtils.containsIgnoreCase(book.getAuthor().getName(), authorName.get())).toList();
+    }
+
+    @DgsData(
+            parentType = DgsConstants.QUERY_TYPE,
+            field = DgsConstants.QUERY.BooksByReleased
+    )
+    public List<Book> getBooksByReleased(DataFetchingEnvironment dataFetchingEnvironment) {
+        @SuppressWarnings("unchecked")
+        var releasedMap = (Map<String, Object>) dataFetchingEnvironment.getArgument("releasedInput");
+        var releasedInput = ReleaseHistoryInput.newBuilder()
+                .printedEdition((boolean) releasedMap.get(DgsConstants.RELEASEHISTORYINPUT.PrintedEdition))
+                .year((int) releasedMap.get(DgsConstants.RELEASEHISTORYINPUT.Year))
+                .build();
+        return FakeBookDataSource.BOOK_LIST.stream().filter(book -> matchReleaseHistory(releasedInput, book.getReleased())).toList();
+//        return null;
+    }
+
+    private boolean matchReleaseHistory(ReleaseHistoryInput input, ReleaseHistory element){
+        return input.getYear().equals(element.getYear()) && input.getPrintedEdition().equals(element.getPrintedEdition());
+    }
+}

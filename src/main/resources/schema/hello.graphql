@@ -1,0 +1,9 @@
+type Hello {
+    text: String!
+    randomNuber: Int
+}
+
+input HelloInput {
+    text: String!
+    number: Int
+}
