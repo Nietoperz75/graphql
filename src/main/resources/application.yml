@@ -7,8 +7,8 @@ spring:
     banner-mode: off
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=problemz
-    username: postgres
-    password: password
+    username: robac
+    password: 1qazZAQ!
   jpa:
     hibernate:
       ddl-auto: none

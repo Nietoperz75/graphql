@@ -19,7 +19,8 @@ dependencies {
     implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.ocpsoft.prettytime:prettytime:5.0.1'
+    implementation 'org.ocpsoft.prettytime:prettytime:5.0.6.Final'
+    implementation 'org.bouncycastle.bcprov-jdk15on:1.68'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
